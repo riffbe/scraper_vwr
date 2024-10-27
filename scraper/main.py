@@ -93,9 +93,9 @@ links_products_names = [
 ]
 
 # Пути для сохранения данных
-directory_path = "scraper VWR" # Html файлы
-directory_path_for_price = "scraper VWR data base price" # Цены для товаров
-directory_path_for_info = "scraper VWR data base" # Полная информация о товарах
+directory_path = "../scraper VWR"  # Html файлы
+directory_path_for_price = "../scraper VWR data base price"  # Цены для товаров
+directory_path_for_info = "../scraper VWR data base"  # Полная информация о товарах
 
 # Функция для загрузки первой страницы для каждой категории продуктов для парсинга количества товаров
 def get_first_page(base_urls, directory_path, category_name, product_names):

@@ -25,7 +25,7 @@ class ProductSearcher:
             return data
         else:
             # Если файл не найден, выбрасывается исключение
-            raise FileNotFoundError(f"Файл {self.data_file} не найден. Сначала запустите скрипт data_preparation.py для подготовки данных.")
+            raise FileNotFoundError(f"Файл {self.data_file} не найден.")
 
     def search_products(self, query):
         # Поиск товаров по имени или артикулу
@@ -48,19 +48,29 @@ class Form(StatesGroup):
 
 class TelegramBot:
     # Класс для создания и управления Telegram-ботом
-    def __init__(self, token, product_searcher):
+    def __init__(self, token, product_searcher, bot_instance=None, dispatcher_instance=None):
         self.token = token
         self.product_searcher = product_searcher
-        self.bot = Bot(token=self.token)
-        self.storage = MemoryStorage() # Временное хранилище для состояний пользователей
-        self.dp = Dispatcher(storage=self.storage)
+
+        if bot_instance is not None:
+            self.bot = bot_instance
+        else:
+            self.bot = Bot(token=self.token)
+
+        self.storage = MemoryStorage()  # Временное хранилище для состояний пользователей
+
+        if dispatcher_instance is not None:
+            self.dp = dispatcher_instance
+        else:
+            self.dp = Dispatcher(storage=self.storage)
+
         self.keyboard = ReplyKeyboardMarkup(
             keyboard=[
                 [KeyboardButton(text='Найти товары')],
             ],
-            resize_keyboard=True # Автоматически подгоняет размер клавиатуры
+            resize_keyboard=True  # Автоматически подгоняет размер клавиатуры
         )
-        self.register_handlers() # Регистрация обработчиков
+        self.register_handlers()  # Регистрация обработчиков
 
     def register_handlers(self):
         # Регистрация обработчиков команд и сообщений
@@ -163,18 +173,18 @@ class TelegramBot:
 
 if __name__ == '__main__':
     # Путь к файлу с подготовленными данными
-    data_file = os.path.join('scraper VWR all info', 'prepared_data.json')
+    data_file = os.path.join('../scraper VWR all info', 'prepared_data.json')
 
     # Проверка наличия директории
-    if not os.path.exists('scraper VWR all info'):
-        os.makedirs('scraper VWR all info')
+    if not os.path.exists('../scraper VWR all info'):
+        os.makedirs('../scraper VWR all info')
 
     # Инициализация класса поиска товаров
     searcher = ProductSearcher(data_file)
 
 
     # Загрузка токена из файла token.txt
-    with open('token.txt', 'r') as token_file:
+    with open('../token.txt', 'r') as token_file:
         TOKEN = token_file.read().strip()
 
     # Инициализация и запуск Telegram-бота
